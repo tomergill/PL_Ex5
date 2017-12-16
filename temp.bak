@@ -1,0 +1,15 @@
+;;tomer
+(define (func a b) 
+  ;; Inner Function - sums the closed interval [x,y]
+  (define (sum-interval x y) (
+    (if (x >= y) x (+ x (sum-interval (+ 1 x) y)))
+  ))
+  ;; the function's body
+  (
+    let ((sum (sum-interval a b)))
+    (if (< a b)
+      (* sum sum)
+      (* sum 2)
+    )
+  )
+)
