@@ -153,4 +153,73 @@
   )
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PART 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Each Stream is a pair (head, func) where head is the first element in the stream, and func is a
+;; function used to generate the next element(s) from the first one.
+
+
+;; 2.0.1
+;; hd 
+;; Returns the first element of the stream
+(define (hd s) (car s))
+
+
+;; 2.0.2
+;; tail
+;; Returns a new stream from the input stream, without it's head
+(define (tail s)
+  (let (
+        (func (cdr s))
+        )
+    (cons (func (hd s)) func)
+    )
+  )
+
+
+;; 2.2 (I'm using seq-gen to create all streams)
+;; seq-gen
+;; Returns a stream made by g that starts with n
+(define (seq-gen n g) (cons n g))
+
+
+;; 2.1
+;; seq
+;; Returns a stream representing the sequence [n, Infinity) (aka {n, n+1, n+2, ...})
+(define (seq n) (seq-gen n (lambda (x) (+ x 1))))
+
+
+;; Help function - Gets the next element
+(define (get_next x ls)
+  (cond
+    ((null? ls) ls)  ;; list is empty - return it
+    ((null? (cdr ls)) ls)  ;; list has only one item - return non-empty list
+    ((= x (car ls)) (car (cdr ls)))  ;; found item, return next
+    (else (get_next x (cdr ls)))  ;; continue search
+    )
+  )
+
+
+;; 2.3
+;; cyclic-seq
+;; Returns a stream that cycles the list
+(define (cyclic-seq ls)
+   (define (cyclic_get_next x)
+     (let (
+           (next (get_next x ls))  ;; find the next element in list after x
+           )
+       ;; if a list is returned, it means x is the last item and the head should be returned
+       (if (or (null? next) (pair? next))  
+           (car ls)
+           next  ;; else - just return the found next
+           )
+       )
+     )
+  (seq-gen (car ls) cyclic_get_next)
+  )
+   
+
+
 ;; load "test.scm"
