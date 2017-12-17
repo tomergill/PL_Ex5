@@ -9,6 +9,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Helping Functions - Filter & Reduce ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; from practices
+
 
 (define (filter p ls)
   (if (null? ls)
@@ -115,7 +117,7 @@
 
 ;; 1.4
 ;; rotate
-;; Returns the list, rotated n times
+;; Returns the list, rotated n times, which is the n mod len last items then rest items from the start
 (define (rotate ls n)
   (cond
      ((null? ls) ls)
@@ -267,8 +269,7 @@
     dictionary  ;; returns the dictionary
     )
   (dict_helper '())  ;; creates a new empty dictionary
-  )
-    
+  )    
 
 
-;; load "test.scm"
+(load "test.scm")
