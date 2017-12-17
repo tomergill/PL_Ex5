@@ -221,5 +221,54 @@
   )
    
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PART 3 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; Helper function - Given a (key . value) list and pair, add the pair to the list or replace another
+;; pair already in the list with the same key (key is string)
+(define (list_add_key_val ls kv)
+  (cond
+    ((null? ls) (list kv))  ;; got to end of list, add the new value to list
+    ((string=? (car kv) (car (car ls))) (cons kv (cdr ls)))  ;; found key, replace key & value in list
+    (else (cons (car ls) (list_add_key_val (cdr ls) kv)))  ;; else add the list so far to the rest
+    )
+  )
+      
+
+;; Help function - Finds the value of key k in (key . value) list ls, or empty list if not found.
+(define (find_val_by_key ls k)
+  (cond
+    ((null? ls) '())  ;; key doesn't exist - return empty list
+    ((string=? k (car (car ls))) (cdr (car ls)))  ;; found key, return value
+    (else (find_val_by_key (cdr ls) k))  ;; continue searching the rest of dictionary
+    )
+  )
+
+
+;; 3
+;; make-dictionary
+;; Returns a "callable" dictionary (it's keys are strings), that can be called with:
+;; a.  A (key . value) pair - Returns a new dictionary with the new pair, or if pair exists in dict 
+;;      replace it's value by the new pair's value
+;; b.  A key (string) - Returns the value by the key, or returns an empty list
+;; c.  An empty list - Returns a list holding all the (key . value) pairs in the dictionary
+(define (make-dictionary)
+  (define (dict_helper lst)  ;; creates a new dictionary from lst
+    (define (dictionary x)  ;; a dictionary function
+      (define ls lst)  ;; the list holding the pairs
+      (cond
+        ((null? x) ls)  ;; empty list (c.)
+        ((pair? x) (dict_helper (list_add_key_val ls x)))  ;; a pair (a.)
+        (else (find_val_by_key ls x))  ;; a key (b.)
+        )
+      )
+    dictionary  ;; returns the dictionary
+    )
+  (dict_helper '())  ;; creates a new empty dictionary
+  )
+    
+
 
 ;; load "test.scm"
