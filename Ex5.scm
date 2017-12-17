@@ -5,9 +5,11 @@
 ;; Username: gilltom
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;; Helping Functions - Filter & Reduce ;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Helping Functions - Filter & Reduce ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (define (filter p ls)
   (if (null? ls)
       ls
@@ -23,6 +25,7 @@
             )
        )))
 
+
 (define (reduce binFunc u)
   (define (reduce-helper ls)
     (if (null? ls)
@@ -31,9 +34,10 @@
   reduce-helper)
 
       
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;; PART 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PART 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; Help function - returns true if list e is the end of list l, other wise false
 (define (list_end_with l e)
@@ -53,6 +57,7 @@
   (list_end_with (string->list str) (string->list suffix))
   )
 
+
 ;; 1.2
 ;; mul-of-pairs
 ;; Returns the multiplication of the values of the strings that ends with suffix
@@ -70,6 +75,7 @@
     )
   )
 
+
 ;; 1.3
 ;; merge
 ;; Merges 2 lists together, starting from l1
@@ -83,5 +89,68 @@
     )
   (merge_helper '() ls1 ls2)
   )
+
+
+;; Help function - modulo
+(define (mod x n)
+  (cond
+    ((= n 0) 0) ;; For safety
+    ((< x 0) (mod (abs x) n))
+    ((< x n) x)
+    (else (mod (- x n) n))
+    )
+  )
+
+
+;; Help function - returns a sub-list of the list up to the n-th place
+(define (get_sublist l n)
+  (cond
+    ((null? l) l)
+    ((= n 0) '())
+    ((< n 0) l)
+    (else (cons (car l) (get_sublist (cdr l) (- n 1))))
+    )
+  )
+
+
+;; 1.4
+;; rotate
+;; Returns the list, rotated n times
+(define (rotate ls n)
+  (cond
+     ((null? ls) ls)
+     ((= 0 n) ls)
+     (else
+      (let* (
+         (len (length ls))
+         (m (mod n len))
+         )
+      (append (reverse (get_sublist (reverse ls) m)) (get_sublist ls (- len m)))))
+     )
+    )
+
+
+;; 1.5
+;; quicksort
+;; Returns a function to quicksort a list with the given comparing function
+(define (quicksort comp)
+  (define (qs-helper ls)
+    (if (null? ls)
+        ls
+        (let* (
+               (pivot (car ls))
+               ;; ordered list of elements < pivot
+               (lesser (qs-helper (filter (lambda (x) (< (comp x pivot) 0)) ls)))
+               (eq (filter (lambda (x) (= (comp x pivot) 0)) ls))  ;; list of elements = pivot
+               ;; ordered list of elements > pivot
+               (greater (qs-helper (filter (lambda (x) (> (comp x pivot) 0)) ls)))
+               )
+          (append lesser (append eq greater))
+          )
+        )
+    )
+  qs-helper
+  )
+
 
 ;; load "test.scm"
